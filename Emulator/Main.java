@@ -10,17 +10,17 @@ public class Main extends Thread {
     chip8 = new Chip();
     chip8.init();
     chip8.loadProgram("./Program/pong2.c8");
-    chip8.run();
     frame = new ChipFrame(chip8);
   }
   public void run(){
     while(true){
+      chip8.run();
       if(chip8.needRedraw()){
         frame.repaint();
         chip8.removeDrawFlag();
       }
       try{
-        sleep(16);
+        Thread.sleep(16);
       }
       catch(InterruptedException e){}
     }

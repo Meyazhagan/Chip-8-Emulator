@@ -5,6 +5,8 @@ import java.awt.*;
 import chip8.*;
 
 public class ChipFrame extends JFrame{
+
+  private static final long serialVersionUID = 1L;
   private ChipPanel panel;
 
   ChipFrame(Chip c){
