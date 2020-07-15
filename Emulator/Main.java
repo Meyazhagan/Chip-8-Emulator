@@ -12,6 +12,7 @@ public class Main extends Thread {
     chip8.loadProgram("./Program/pong2.c8");
     frame = new ChipFrame(chip8);
   }
+
   public void run(){
     while(true){
       chip8.run();

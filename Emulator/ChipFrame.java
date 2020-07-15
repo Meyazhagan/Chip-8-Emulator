@@ -12,12 +12,11 @@ public class ChipFrame extends JFrame{
   ChipFrame(Chip c){
     setPreferredSize(new Dimension(640, 320));
     pack();
-    setPreferredSize(new Dimension(640 + getInsets().right + getInsets().left,
-     320 + getInsets().top + getInsets().bottom));
+    setPreferredSize(new Dimension(640 + getInsets().right + getInsets().left, 320 + getInsets().top + getInsets().bottom));
     panel = new ChipPanel(c);
     setLayout(new BorderLayout());
     add(panel, BorderLayout.CENTER);
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
     setTitle("Chip 8 Emulator");
     pack();
     setVisible(true);
