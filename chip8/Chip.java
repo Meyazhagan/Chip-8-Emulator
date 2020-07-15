@@ -28,4 +28,16 @@ public class Chip{
     keys = new byte[16];
     display = new byte[64* 32];
   }
+  void run(){
+    //fetch data - our char is 16bit, we adding two 8bits into one.
+    char opcode = (char)((memory[pc] << 8) | memory[pc+1]);
+
+    //decode opcode
+
+    //excute opcode
+  }
+
+  public byte[] getDisplay(){
+    return display;
+  }
 }
