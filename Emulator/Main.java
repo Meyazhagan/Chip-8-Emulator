@@ -2,10 +2,32 @@ package Emulator;
 
 import chip8.Chip;
 
-public class Main {
+public class Main extends Thread {
+  Chip chip8;
+  ChipFrame frame;
+
+  public Main(){
+    chip8 = new Chip();
+    chip8.init();
+    chip8.loadProgram("./Program/pong2.c8");
+    chip8.run();
+    frame = new ChipFrame(chip8);
+  }
+  public void run(){
+    while(true){
+      if(chip8.needRedraw()){
+        frame.repaint();
+        chip8.removeDrawFlag();
+      }
+      try{
+        sleep(16);
+      }
+      catch(InterruptedException e){}
+    }
+  }
+
   public static void main(String[] args) {
-    Chip c = new Chip();
-    c.init();
-    ChipFrame frame = new ChipFrame(c);
+    Main main = new Main();
+    main.start();
   }
 }
