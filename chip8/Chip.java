@@ -44,7 +44,7 @@ public class Chip{
   public void run(){
     //fetch data - our char is 16bit, we adding two 8bits into one.
     char opcode = (char)((memory[pc] << 8) | memory[pc+1]);
-    System.out.print("hexcode " + Integer.toHexString(opcode) + " : ");
+    // System.out.print("hexcode " + Integer.toHexString(opcode) + " : ");
     //decode opcode
     //excute opcode
     switch(opcode & 0xf000){
@@ -287,11 +287,11 @@ public class Chip{
                   int x = (opcode & 0x0f00) >> 8;
                   if(keys[V[x]] == 1){
                     pc += 4;
-                    System.out.println("if V[" + (int)V[x] + "] is pressed skips");
+                    // System.out.println("if V[" + (int)V[x] + "] is pressed skips");
                   }
                   else{
                     pc += 2;
-                    System.out.println("if V[" + (int)V[x] + "] is not pressed not skips");
+                    // System.out.println("if V[" + (int)V[x] + "] is not pressed not skips");
                   }
                   break;
                 }
@@ -300,11 +300,11 @@ public class Chip{
                   int x = (opcode & 0x0f00) >> 8;
                   if(keys[V[x]] == 0){
                     pc += 4;
-                    System.out.println("if V[" + (int)V[x] + "] is not pressed skips");
+                    // System.out.println("if V[" + (int)V[x] + "] is not pressed skips");
                   }
                   else{
                     pc += 2;
-                    System.out.println("if V[" + (int)V[x] + "] is pressed not skips");
+                    // System.out.println("if V[" + (int)V[x] + "] is pressed not skips");
                   }
                   break;
                 }
@@ -398,9 +398,16 @@ public class Chip{
         System.exit(0);
         break;
     }
+    if(sound_timer > 0){
+      // System.out.println(sound_timer);
+    }
+    if(sound_timer == 5){
+      sound_timer =0;
+      Audio.playSound("./program/Gun.wav");
+    }
     if(sound_timer == 4){
       sound_timer =0;
-      Audio.playSound("./program/ATone.wav");
+      Audio.playSound("./program/Ping.wav");
     }
     if(sound_timer == 32){
       sound_timer =0;
@@ -408,6 +415,7 @@ public class Chip{
     }
     if(delay_timer > 0){
       delay_timer--;
+      // System.out.println(delay_timer);
     }
   }
 

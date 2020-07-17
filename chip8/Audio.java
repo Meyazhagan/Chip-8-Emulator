@@ -15,7 +15,7 @@ public class Audio {
     clip.open(audio);
     clip.start();
     
-    System.out.println("Beep " + i++);
+    // System.out.println("Beep " + i++);
     }
     catch(Exception e){
       System.err.println("error in audio");
