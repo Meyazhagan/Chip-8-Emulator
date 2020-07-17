@@ -16,7 +16,7 @@ public class ChipPanel extends JPanel {
     byte[] display = chip.getDisplay();
     for(int i = 0; i < display.length; i++){
       if(display[i] == 0){
-        g.setColor(Color.GRAY);
+        g.setColor(Color.BLACK);
       }
       else{
         g.setColor(Color.WHITE);

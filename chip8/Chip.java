@@ -44,13 +44,20 @@ public class Chip{
   public void run(){
     //fetch data - our char is 16bit, we adding two 8bits into one.
     char opcode = (char)((memory[pc] << 8) | memory[pc+1]);
-    // System.out.println("hexcode " + Integer.toHexString(opcode) + " : ");
+    System.out.print("hexcode " + Integer.toHexString(opcode) + " : ");
     //decode opcode
     //excute opcode
     switch(opcode & 0xf000){
       case 0x0000 : {
         switch(opcode & 0x00ff){
-            // case 0x00E0: break;
+            case 0x00E0: {
+              for(int i =0; i< display.length; i++){
+                display[i] = 0;
+              }
+              pc += 2;
+              needRedraw = true;
+              break;
+            }
             case 0x00EE: //return from subroutine
               stackPointer--;
               pc = (char)(stack[stackPointer] + 2);
@@ -124,11 +131,27 @@ public class Chip{
                     pc += 2;
                     break;
                   }
+              case 0x0001:
+                  {
+                    int x = (opcode & 0x0f00) >> 8;
+                    int y = (opcode & 0x00f0) >> 4;
+                    V[x] = (char)(V[x] | V[y]);
+                    pc += 2;
+                    break;
+                  }
               case 0x0002:
                   {
                     int x = (opcode & 0x0f00) >> 8;
                     int y = (opcode & 0x00f0) >> 4;
                     V[x] = (char)(V[x] & V[y]);
+                    pc += 2;
+                    break;
+                  }
+              case 0x0003:
+                  {
+                    int x = (opcode & 0x0f00) >> 8;
+                    int y = (opcode & 0x00f0) >> 4;
+                    V[x] = (char)(V[x] ^ V[y]);
                     pc += 2;
                     break;
                   }
@@ -160,6 +183,36 @@ public class Chip{
                     pc += 2;
                     break;
                   }
+              case 0x0006:
+                  {
+                    int x = (opcode & 0x0f00) >> 8;
+                    V[0xf] = (char)(V[x] & 0x1);
+                    V[x] = (char)(V[x] >> 1);
+                    pc += 2;
+                    break;
+                  }
+              case 0x0007:
+                    {
+                    int x = (opcode & 0x0f00) >> 8;
+                    int y = (opcode & 0x00f0) >> 4;
+                    if(V[x] > V[y]){
+                      V[0xf] = 0;
+                    }
+                    else{
+                      V[0xf] = 1;
+                    }
+                    V[x] = (char)(V[y] - V[x] & 0xff);
+                    pc += 2;
+                    break;
+                    }
+              case 0x000E:
+                  {
+                    int x = (opcode & 0x0f00) >> 8;
+                    V[0xf] = (char)(V[x] & 0x80);
+                    V[x] = (char)(V[x] << 1);
+                    pc += 2;
+                    break;
+                  }
               default : System.out.println("undefined function in 0x8000!");
                         System.exit(0);
                         break;
@@ -178,7 +231,13 @@ public class Chip{
         I = (char)(opcode & 0x0fff);
         pc += 2;
         break;
-      // case 0xB000 : break;
+      case 0xB000 :
+          {
+            int nnn = (opcode & 0x0fff);
+            int extra = V[0] & 0xff;
+            pc = (char)(extra+ nnn);
+            break;
+          }
       case 0xC000 :
        {
          int x = (opcode & 0x0f00) >> 8;
@@ -219,7 +278,7 @@ public class Chip{
         pc += 2;
         needRedraw = true;
        // System.out.println("Drawing at V[" + ((opcode & 0x0F00) >> 8) + "] = " + x + ", V[" + ((opcode & 0x00F0) >> 4) + "] = " + y);
-        break;}
+  break;}
       case 0xE000 : 
           {
             switch(opcode & 0x00ff){
@@ -228,11 +287,11 @@ public class Chip{
                   int x = (opcode & 0x0f00) >> 8;
                   if(keys[V[x]] == 1){
                     pc += 4;
-                    // System.out.println("if V[" + (int)V[x] + "] is pressed skips");
+                    System.out.println("if V[" + (int)V[x] + "] is pressed skips");
                   }
                   else{
                     pc += 2;
-                    // System.out.println("if V[" + (int)V[x] + "] is not pressed not skips");
+                    System.out.println("if V[" + (int)V[x] + "] is not pressed not skips");
                   }
                   break;
                 }
@@ -241,14 +300,17 @@ public class Chip{
                   int x = (opcode & 0x0f00) >> 8;
                   if(keys[V[x]] == 0){
                     pc += 4;
-                    // System.out.println("if V[" + (int)V[x] + "] is not pressed skips");
+                    System.out.println("if V[" + (int)V[x] + "] is not pressed skips");
                   }
                   else{
                     pc += 2;
-                    // System.out.println("if V[" + (int)V[x] + "] is pressed not skips");
+                    System.out.println("if V[" + (int)V[x] + "] is pressed not skips");
                   }
                   break;
                 }
+                default:
+                        System.out.println("undefined funcion!");
+                        System.exit(0);;
             } 
             break;
           }
@@ -260,7 +322,17 @@ public class Chip{
            // System.out.println("delay_timer = "+ delay_timer);
             break; 
           } 
-          // case 0x000A: break;
+          case 0x000A:{
+            int x = (opcode & 0x0f00) >> 8;
+            for(int i =0; i<keys.length; i++){
+              if(keys[i] == 1){
+                V[x] = (char)i;
+                pc += 2;
+                break;
+              }
+            }
+            break;
+          }
           case 0x0015: 
             delay_timer = V[(opcode & 0x0f00)>>8]; 
             pc += 2;   
@@ -298,13 +370,18 @@ public class Chip{
             //System.out.println("value at V["+ x +"] sets memory as {" + hunders +"," + tens + "," + x +"}");
             break;
           }
-          case 0x0055: break;
-          case 0x0065: {
-            int offset = 0;
+          case 0x0055:{
             int x = (opcode & 0x0f00) >> 8;
-            while(offset <= x){
-              V[offset] = memory[I + offset];
-              offset++;
+            for(int i = 0; i<= x ; i++){
+              memory[I+i] = V[i];
+            }
+            pc += 2;
+            break;
+          }
+          case 0x0065: {
+            int x = (opcode & 0x0f00) >> 8;
+            for(int i = 0; i<= x ; i++){
+              V[i] = memory[I + i];
             }
             I = (char)(I + x + 1);
             pc += 2;
