@@ -15,13 +15,14 @@ public class Main extends Thread {
 
   public void run(){
     while(true){
+      chip8.setKey(frame.getkeyBuffer());
       chip8.run();
       if(chip8.needRedraw()){
         frame.repaint();
         chip8.removeDrawFlag();
       }
       try{
-        Thread.sleep(16);
+        Thread.sleep(3);
       }
       catch(InterruptedException e){}
     }
