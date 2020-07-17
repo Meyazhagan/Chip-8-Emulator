@@ -1,6 +1,6 @@
 package chip8;
 
-public class ChipData {
+public class FontData {
 	
 	/**
 	 * Fontset in bytes
