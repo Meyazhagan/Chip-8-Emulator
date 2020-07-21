@@ -6,24 +6,41 @@ import java.awt.*;
 import java.awt.event.*;
 import chip8.*;
 
-public class ChipFrame extends JFrame implements KeyListener {
+public class ChipFrame extends JFrame {
 
   private static final long serialVersionUID = 1L;
   private ChipPanel panel;
   private int[] keyBuffer;
   private int[] KeyIDtoKey;
+  // private static boolean stopFlag = false;
+  JToggleButton startButton;
+  JComboBox programList;
 
   ChipFrame(Chip c) {
+    Container pane = this.getContentPane();
+    String[] pList = {"pong2", "tetris", "invaders"};
+    startButton = new JToggleButton("Start");
+    startButton.setSelected(true);
+
+    programList = new JComboBox(pList);
+
     setPreferredSize(new Dimension(640, 320));
     pack();
     setPreferredSize(
         new Dimension(640 + getInsets().right + getInsets().left, 320 + getInsets().top + getInsets().bottom));
     panel = new ChipPanel(c);
     setLayout(new BorderLayout());
+
+    JPanel jb = new JPanel();
+    jb.setLayout(new FlowLayout(FlowLayout.CENTER));
+    jb.add(programList);
+    jb.add(startButton);
     add(panel, BorderLayout.CENTER);
+    add(jb, BorderLayout.SOUTH);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     setTitle("Chip 8 Emulator");
     pack();
+    setSize(660, 380);
     setVisible(true);
     addKeyListener(this);
 
@@ -57,6 +74,7 @@ public class ChipFrame extends JFrame implements KeyListener {
   public void keyPressed(KeyEvent e){
     if(KeyIDtoKey[e.getKeyCode()] != -1){
       keyBuffer[KeyIDtoKey[e.getKeyCode()]] = 1;
+      System.out.println("pressed");
     }
   }
   @Override
@@ -70,5 +88,19 @@ public class ChipFrame extends JFrame implements KeyListener {
   }
   public int[] getkeyBuffer(){
     return keyBuffer;
+  }
+  public String getProgram(){
+    String data = "./Program/"+ programList.getItemAt(programList.getSelectedIndex()) + ".c8";
+      return data;           
+  }
+  public boolean getStopFlag(){
+    if(startButton.isSelected()){
+      startButton.setText("Start");
+      return true;
+    }
+    else{
+      startButton.setText("Stop");
+      return false;
+    }
   }
 }
