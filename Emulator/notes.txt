@@ -12,58 +12,32 @@ public class ChipFrame extends JFrame {
   private ChipPanel panel;
   private int[] keyBuffer;
   private int[] KeyIDtoKey;
+  // private static boolean stopFlag = false;
   JToggleButton startButton;
-  JComboBox<String> programList;
+  JComboBox programList;
 
   ChipFrame(Chip c) {
     String[] pList = { "pong2", "tetris", "invaders" };
-
     startButton = new JToggleButton("Start");
     startButton.setSelected(true);
+    startButton.setBounds(50, 330, 100, 20);
 
-    programList = new JComboBox<>(pList);
+    programList = new JComboBox(pList);
+    programList.setBounds(150, 330, 100, 20);
 
-    setPreferredSize(new Dimension(640, 320));
-    pack();
-    setPreferredSize(
-    new Dimension(640 + getInsets().right + getInsets().left, 320 + getInsets().top + getInsets().bottom));
+    // setPreferredSize(new Dimension(640, 320));
+    // pack();
+    // setPreferredSize(
+    //     new Dimension(640 + getInsets().right + getInsets().left, 320 + getInsets().top + getInsets().bottom));
     panel = new ChipPanel(c);
+    // setLayout(new BorderLayout());
 
-    setLayout(new BorderLayout());
-
-    JPanel jb = new JPanel();
-    jb.setLayout(new FlowLayout(FlowLayout.CENTER));
-
-    jb.add(programList);
-    jb.add(startButton);
-
-    add(jb, BorderLayout.SOUTH);
-    add(panel, BorderLayout.CENTER);
-    setFocusable(true);
-    addKeyListener(new KeyListener(){
-
-      @Override
-      public void keyTyped(KeyEvent e) {
-        
-      }
-
-      @Override
-      public void keyPressed(KeyEvent e) {
-        if(KeyIDtoKey[e.getKeyCode()] != -1){
-          keyBuffer[KeyIDtoKey[e.getKeyCode()]] = 1;
-          System.out.println("pressed");
-        }
-      }
-
-      @Override
-      public void keyReleased(KeyEvent e) {
-        if(KeyIDtoKey[e.getKeyCode()] != -1){
-          keyBuffer[KeyIDtoKey[e.getKeyCode()]] = 0;
-          System.out.println("released");
-        }
-      }
-      
-    });
+    // JPanel jb = new JPanel();
+    // jb.setLayout(new FlowLayout(FlowLayout.CENTER));
+    // panel.add(programList);
+    // panel.add(startButton);
+    // add(new JCheckBox());
+    // add(panel);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     setTitle("Chip 8 Emulator");
     pack();

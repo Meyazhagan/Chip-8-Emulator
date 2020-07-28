@@ -2,6 +2,8 @@ package Emulator;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
+
 import chip8.Chip;
 
 public class ChipPanel extends JPanel {
