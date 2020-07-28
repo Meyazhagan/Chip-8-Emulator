@@ -24,7 +24,7 @@ public class ChipFrame extends JFrame implements KeyListener{
         startButton = new JToggleButton("Start");
         startButton.setSelected(true);
 
-        String[] color = { "WHITE", "RED", "BLUE" , "GREEN" };
+        String[] color = {  "RED", "BLUE" , "GREEN", "WHITE"};
 
         programList = new JComboBox<>(pList);
         colorList = new JComboBox<>(color);
@@ -47,9 +47,6 @@ public class ChipFrame extends JFrame implements KeyListener{
         add(jb, BorderLayout.SOUTH);
         add(panel, BorderLayout.CENTER);
 
-        setFocusable(true);
-        addKeyListener(this);
-
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Chip 8 Emulator");
         pack();
@@ -59,6 +56,8 @@ public class ChipFrame extends JFrame implements KeyListener{
         KeyIDtoKey = new int[256];
         setVisible(true);
         fillKeys();
+        
+        update();
     }
 
     public void fillKeys() {
@@ -91,17 +90,17 @@ public class ChipFrame extends JFrame implements KeyListener{
         return data;           
     }
     public void setColor(){
-        switch(colorList.getSelectedIndex()){
-            case 0 : 
+        switch(colorList.getItemAt(colorList.getSelectedIndex())){
+            case "WHITE" : 
                 c = Color.WHITE;
                 break;
-            case 1 :
+            case "RED" :
                 c = Color.RED;
                 break;
-            case 2 : 
+            case "BLUE" : 
                 c = Color.BLUE;
                 break;
-            case 3 : 
+            case "GREEN" : 
                 c = Color.GREEN;
                 break;
         }
@@ -137,5 +136,10 @@ public class ChipFrame extends JFrame implements KeyListener{
             keyBuffer[KeyIDtoKey[e.getKeyCode()]] = 0;
             // System.out.println("released");
         }
+    }
+
+    public void update(){
+        setFocusable(true);
+        addKeyListener(this);
     }
 }
