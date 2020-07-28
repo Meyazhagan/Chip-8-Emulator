@@ -49,7 +49,8 @@ public class Chip{
         //decode opcode
 
         //excute opcode
-        switch(opcode & 0xf000){
+    switch(opcode & 0xf000)
+    {
         case 0x0000 : {
             switch(opcode & 0x00ff)
             {
@@ -226,8 +227,8 @@ public class Chip{
             }
             break;
         }
-        case 0x9000 :  
-        {
+        case 0x9000 :  // 9XY0
+        { // Skips the next instruction if VX doesn't equal VY.
             int x = (opcode & 0x0f00) >> 8;
             int y = (opcode & 0x00f0) >> 4;
             if(V[x] != V[y])
@@ -347,38 +348,43 @@ public class Chip{
                     pc += 2;   
                     break;
                 }
-                case 0x0029: 
-                {
+                case 0x0029: // FX29
+                { // Sets I to the location of the sprite for the character in VX. 
                     int charater = V[(opcode & 0x0f00) >> 8];
                     I = (char)(0x50 + (charater * 5));
                     pc += 2;
                     break;
                 }
-                case 0x0018: 
+                case 0x0018: // FX18
+                { // Sets the sound timer to VX.
                     sound_timer = V[(opcode & 0x0f00)>>8]; 
                     pc += 2;   
                     break;
-            case 0x001E: 
-                {
+                }
+            case 0x001E: // FX1E
+                { // Adds VX to I. VF is not affected.
                     int x = (opcode & 0x0f00) >> 8;
                     I = (char)(V[x] + I);
                     pc += 2;
                     break;
                 }
-            case 0x0033: {
+            case 0x0033: // FX33
+            { // Stores the binary-coded decimal representation of VX.
                 int x = V[(opcode & 0x0f00) >> 8];
                 int hunders = (x - (x%100)) /100;
                 x -= hunders * 100;
                 int tens = (x - (x%10)) /10;
                 x -= tens * 10;
+
                 memory[I] = (char)(hunders);
                 memory[I + 1] = (char)(tens);
                 memory[I + 2] = (char)(x);
+
                 pc += 2;
-                //System.out.println("value at V["+ x +"] sets memory as {" + hunders +"," + tens + "," + x +"}");
                 break;
             }
-            case 0x0055:{
+            case 0x0055: // FX55
+            { // Stores V0 to VX (including VX) in memory starting at address I.
                 int x = (opcode & 0x0f00) >> 8;
                 for(int i = 0; i<= x ; i++){
                 memory[I+i] = V[i];
@@ -386,14 +392,16 @@ public class Chip{
                 pc += 2;
                 break;
             }
-            case 0x0065: {
+            case 0x0065: // FX65
+            { // Fills V0 to VX (including VX) with values from memory starting at address I. 
                 int x = (opcode & 0x0f00) >> 8;
                 for(int i = 0; i<= x ; i++){
                 V[i] = memory[I + i];
                 }
                 I = (char)(I + x + 1);
                 pc += 2;
-                break;}
+                break;
+            }
             default:
                 System.err.print("Undefinded function! ");
                 System.exit(0);
@@ -406,71 +414,64 @@ public class Chip{
             System.exit(0);
             break;
         }
-        if(sound_timer > 0){
-        // System.out.println(sound_timer);
-        }
         if(sound_timer == 5){
-        sound_timer =0;
-        Audio.playSound("./program/Gun.wav");
+            sound_timer =0;
+            Audio.playSound("./program/Gun.wav");
         }
         if(sound_timer == 4){
-        sound_timer =0;
-        Audio.playSound("./program/Ping.wav");
+            sound_timer =0;
+            Audio.playSound("./program/Ping.wav");
         }
         if(sound_timer == 32){
-        sound_timer =0;
-        Audio.playSound("./program/beep.wav");
+            sound_timer =0;
+            Audio.playSound("./program/beep.wav");
         }
-        if(delay_timer > 0){
-        delay_timer--;
-        // System.out.println(delay_timer);
+        if(delay_timer > 0)
+            delay_timer--;
+    }
+
+    public byte[] getDisplay(){
+        return display;
+    }
+
+    public void loadProgram(String file){
+        DataInputStream input = null;
+        try{
+            input = new DataInputStream(new FileInputStream(new File(file)));
+            int offset = 0;
+            while(input.available() > 0){
+                memory[0x200 + offset] = (char)(input.readByte() & 0xff);
+                offset++;
+            }
+        }
+        catch(IOException e){
+            e.printStackTrace();
+            System.exit(0);
+        }
+        finally{
+            if(input != null) 
+                try{ input.close(); } catch(IOException e){}
         }
     }
 
-  public byte[] getDisplay(){
-    return display;
-  }
-
-  public void loadProgram(String file){
-    DataInputStream input = null;
-    try{
-    input = new DataInputStream(new FileInputStream(new File(file)));
-    int offset = 0;
-    while(input.available() > 0){
-      memory[0x200 + offset] = (char)(input.readByte() & 0xff);
-      offset++;
+    public boolean needRedraw(){
+        return needRedraw;
     }
 
+    public void removeDrawFlag(){
+        needRedraw = false;
     }
-    catch(IOException e){
-      e.printStackTrace();
-      System.exit(0);
-    }
-    finally{
-      if(input != null){ 
-        try{ input.close(); } catch(IOException e){}
-      }
-    }
-  }
 
-  public boolean needRedraw(){
-    return needRedraw;
-  }
-
-  public void removeDrawFlag(){
-    needRedraw = false;
-  }
-  public void loadFont(){
-    int offset = 0;
-    while(offset < FontData.fontset.length){
-      memory[0x50 + offset] = (char)(FontData.fontset[offset] & 0xff);
-      offset++;
+    public void loadFont(){
+        int offset = 0;
+        while(offset < FontData.fontset.length){
+            memory[0x50 + offset] = (char)(FontData.fontset[offset] & 0xff);
+            offset++;
+        }
     }
-  }
 
-  public void setKey(int[] keyBuffer){
-    for(int i=0; i<keys.length; i++){
-      keys[i] = (byte)keyBuffer[i];
+    public void setKey(int[] keyBuffer){
+        for(int i=0; i<keys.length; i++)
+            keys[i] = (byte)keyBuffer[i];
     }
-  }
 }

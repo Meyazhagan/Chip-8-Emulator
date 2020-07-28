@@ -14,6 +14,9 @@ public class ChipFrame extends JFrame implements KeyListener{
     private int[] KeyIDtoKey;
     JToggleButton startButton;
     JComboBox<String> programList;
+    JComboBox<String> colorList;
+    
+    Color c;
 
     ChipFrame(Chip c) {
         String[] pList = { "pong2", "tetris", "invaders" };
@@ -21,7 +24,10 @@ public class ChipFrame extends JFrame implements KeyListener{
         startButton = new JToggleButton("Start");
         startButton.setSelected(true);
 
+        String[] color = { "WHITE", "RED", "BLUE" , "GREEN" };
+
         programList = new JComboBox<>(pList);
+        colorList = new JComboBox<>(color);
 
         setPreferredSize(new Dimension(640, 320));
         pack();
@@ -36,6 +42,7 @@ public class ChipFrame extends JFrame implements KeyListener{
 
         jb.add(programList);
         jb.add(startButton);
+        jb.add(colorList);
 
         add(jb, BorderLayout.SOUTH);
         add(panel, BorderLayout.CENTER);
@@ -46,7 +53,7 @@ public class ChipFrame extends JFrame implements KeyListener{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Chip 8 Emulator");
         pack();
-        setSize(660, 380);
+        setSize(660, 400);
 
         keyBuffer = new int[16];
         KeyIDtoKey = new int[256];
@@ -82,6 +89,23 @@ public class ChipFrame extends JFrame implements KeyListener{
     public String getProgram(){
         String data = "./Program/"+ programList.getItemAt(programList.getSelectedIndex()) + ".c8";
         return data;           
+    }
+    public void setColor(){
+        switch(colorList.getSelectedIndex()){
+            case 0 : 
+                c = Color.WHITE;
+                break;
+            case 1 :
+                c = Color.RED;
+                break;
+            case 2 : 
+                c = Color.BLUE;
+                break;
+            case 3 : 
+                c = Color.GREEN;
+                break;
+        }
+        panel.setCol(c);
     }
     public boolean getStopFlag(){
         if(startButton.isSelected()){

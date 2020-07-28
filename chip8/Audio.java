@@ -7,19 +7,17 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 public class Audio {
-  static int i =0;
-  public static void playSound(String file){
-    try{
-    Clip clip = AudioSystem.getClip();
-    AudioInputStream audio = AudioSystem.getAudioInputStream(new File(file));
-    clip.open(audio);
-    clip.start();
-    
-    //  System.out.println("Beep " + i++);
+    static int i =0;
+    public static void playSound(String file){
+        try{
+            Clip clip = AudioSystem.getClip();
+            AudioInputStream audio = AudioSystem.getAudioInputStream(new File(file));
+            clip.open(audio);
+            clip.start();
+        }
+        catch(Exception e){
+            System.err.println("error in audio");
+        }
+        
     }
-    catch(Exception e){
-      System.err.println("error in audio");
-    }
-    
-  }
 }

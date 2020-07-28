@@ -15,10 +15,13 @@ public class Main extends Thread{
         while(true){
             chip8.init();
             chip8.loadProgram(frame.getProgram());
+
             while(frame.getStopFlag()){
                 chip8.setKey(frame.getkeyBuffer());
                 chip8.run();
+                
                 if(chip8.needRedraw()){
+                    frame.setColor();
                     frame.repaint();
                     chip8.removeDrawFlag();
                 }
