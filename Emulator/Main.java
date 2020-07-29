@@ -15,6 +15,7 @@ public class Main extends Thread{
         while(true){
             chip8.init();
             chip8.loadProgram(frame.getProgram());
+            frame.update();
 
             while(frame.getStopFlag()){
                 chip8.setKey(frame.getkeyBuffer());

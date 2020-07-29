@@ -24,7 +24,7 @@ public class ChipFrame extends JFrame implements KeyListener{
         startButton = new JToggleButton("Start");
         startButton.setSelected(true);
 
-        String[] color = {  "RED", "BLUE" , "GREEN", "WHITE"};
+        String[] color = {  "WHITE", "BLUE" , "GREEN", "RED"};
 
         programList = new JComboBox<>(pList);
         colorList = new JComboBox<>(color);
