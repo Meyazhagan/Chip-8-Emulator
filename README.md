@@ -6,3 +6,8 @@ Chip-8 Emulator implementing opcode
 
 ## Changing colors and reloading of program
 ![](images/chip8.gif)
+
+---
+
+# LICENSE
+Licensed under the [MIT License](LICENSE)
