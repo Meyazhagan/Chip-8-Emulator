@@ -15,7 +15,6 @@ public class Main extends Thread{
         while(true){
             chip8.init();
             chip8.loadProgram(frame.getProgram());
-            frame.update();
 
             while(frame.getStopFlag()){
                 chip8.setKey(frame.getkeyBuffer());
@@ -26,7 +25,7 @@ public class Main extends Thread{
                     frame.repaint();
                     chip8.removeDrawFlag();
                 }
-                try { Thread.sleep(3); }
+                try { Thread.sleep(1); }
                 catch(InterruptedException e){}
             }
         }
